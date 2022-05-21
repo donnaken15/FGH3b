@@ -1,0 +1,84 @@
+html {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: #222;
+	background-size: cover;
+	-webkit-box-sizing: border-box;
+}
+body {
+	margin: 0;
+	height: 100%;
+	font-size: 28px;
+	font-family: Archivo Narrow;
+	color: #fff;
+}
+div, hr {
+	margin:0;
+	padding:0;
+}
+* {
+	user-select:none;
+	color: #fff;
+	opacity: 1;
+}
+*::selection {
+	background: #0000;
+	color: #fff;
+}
+th {
+	font-weight: normal;
+}
+table, th, td, tr {
+	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+}
+#chart-cycler td {
+	border: solid 0px #fff;
+	padding: 4px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.chart-row {
+	background: url(fade.png);
+}
+.chart-row:hover {
+	background: url(fade2.png);
+}
+.chart-row.chart-select {
+	background: url(fade3.png);
+}
+.chart-row.chart-select td {
+	color: #000;
+}
+/*td.cdash::before {
+	content: "  —&mdash;&nbsp;&nbsp;";
+}*/
+.chart-row, .pointer {
+	cursor: pointer;
+}
+.chart-row td:nth-child(1) {
+	text-align: right;
+	/*float:right;*/
+	max-width:100%;
+	display:block;
+}
+.fill { width: 100%; }
+.sideicon {
+	float:right;
+	height:40%;
+}
+.cachetext {
+	width:12%;
+	float:right;
+	text-align:center;
+	color:#fb1;
+}
+.chart-row:not(.cached) td img.sideicon {
+	display:none;
+}
+span, hr {
+	opacity: 0.9;
+}

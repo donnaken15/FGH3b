@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<head>
+		<title>FastGH3 Song Browser</title>
+		<script>
+		/* auto refresh for testing */
+		var autoreload = false;
+		if (autoreload)
+		{
+			setInterval((function autoRefresh() {
+				window.location = window.location.href;
+			}), 200);
+		}
+		</script>
+		<table style="display:none"><!--template-->
+			<tr id="chart-entry" class="chart-row"> <!--chart-select cached-->
+				<td><span>Title</span></td>
+				<td><span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;</span></td>
+				<td>
+					<span>Artist</span>
+					<img alt="Cached" class="sideicon" src="gfx/cache.png"/>
+				</td>
+			</tr>
+		</table>
+	</head>
+	<body onresize="resizeEvent(event)" style="background-image:url(fade5.png)">
+		<div style="padding: 6px;" id="datap">
+			<div id="hed">
+				<img height="40px" src="gfx/icon.png">
+				<img height="40px" src="gfx/logo.svg">
+				<span style="padding:0;margin:-36px 0px 0px 0px;line-height:0;font-size:48px">&nbsp;|&nbsp;SONG BROWSER (WIP!!)</span>
+				<hr>
+			</div>
+			<div id="wad">
+				<table id="dividers" style="display:block;">
+					<tr>
+						<td width="70%" style="display:block;">
+							<table id="chart-cycler" style="width:143%;height:85vh;overflow-y:scroll;">
+								<tr style="background: url(fade4.png)">
+									<th width="50%"><span>Title</span></th>
+									<th width="1px"></th>
+									<th width="50%"><span>Artist</span></th>
+								</tr>
+							</table>
+						</td>
+						<td id="cc-sep" style="width:0.001px;border:solid 1px white"></td>
+						<td id="cc-more" width="280px" style="display:block;text-align:center;background:url(fade.png);border-top:solid 8px white">
+							<div style="display:block">
+								<br><!--STUPID-->
+								<span class="pointer" onclick='if(chartselect!==null)run(chartselect)' style="font-size:48px;background-color:#00dd9c;
+									padding: 0px 40px 4px 40px;margin-bottom:16px;display:inline-block;border-radius:40px;">&#x25B8; PLAY</span>
+								<br><br>
+								<hr style="margin-bottom:15px">
+								<table class="fill">
+									<tr>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div style="background:url(fade.png);">
+					<span>&nbsp;&#x2116; of Charts: </span><span id="ccount">...</span>
+					<span onclick='exec("start https://donnaken15.tk/fastgh3")' style="float:right;cursor:pointer">https://donnaken15.tk/fastgh3&nbsp;</span>
+					<span style="float:right;">&nbsp;|&nbsp;</span>
+					<span id="buildno" onclick='exec("start https://donnaken15.tk/fastgh3/dev.html")' style="float:right;cursor:pointer"></span>
+				</div>
+			</div>
+		</div>
+		<div style="position:fixed;width:100%;height:100%;top:0;left:0;right:0;bottom:0;background-color:#000;opacity:0.8;z-index:2;cursor:wait;" id="load">
+			<svg id="loadIcon" xmlns="http://www.w3.org/2000/svg" style="margin:auto;display:block;position:absolute;top:15%;left:0;width:100%;" width="50%" height="50%" viewBox="0 0 100 100">
+				<g>
+					<path d="M50 20A30 30 0 1 0 76.73019572565104 36.3802850078136" fill="none" stroke="#fff" stroke-width="8"></path>
+					<path d="M49 8L49 32L61 20L49 8" fill="#fff"></path>
+					<animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="0.8s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
+				</g>
+			</svg>
+			<a style="font-size:40px;position:absolute;top:65%;left:0;width:100%;text-align:center;" id="loadText">Loading... (0%)</a>
+			<script src="load.js"></script>
+		</div>
+	</body>
+</html>
