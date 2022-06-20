@@ -65,7 +65,7 @@ function readChartDir(dir) {
 							album: null,
 							genre: findKeyValue(chart,"Genre"),
 							year: null,
-							duration: 0,
+							duration: null,
 							charter: findKeyValue(chart,"Charter"),
 							streams: [findKeyValue(chart,"MusicStream"),
 									findKeyValue(chart,"GuitarStream"),
@@ -80,37 +80,57 @@ function readChartDir(dir) {
 							album: null,
 							genre: "Unknown",
 							year: null,
-							duration: 0,
+							duration: null,
 							charter: "Unknown",
 							streams: [null,
 									null,
 									null]
 						};
 					
-					if (f === "notes.chart" && fs.existsSync(path.join(dir,'song.ini')))
+					//chartentry.inif = path.join(dir,'song.ini')
+					if (fs.existsSync(path.join(dir,'song.ini')))
 					{
+						// CasE sEnsITiVe!!!!111
 						var songini = ini.parse(fs.readFileSync(path.join(dir,'song.ini'),'utf-8'));
-						try {
-							// ?!?!?!?!?!
-							if (songini.song.name !== undefined)
-								chartentry.title = songini.song.name;
-							if (songini.song.artist !== undefined)
-								chartentry.artist = songini.song.artist;
-							if (songini.song.album !== undefined)
-								chartentry.album = songini.song.album;
-							if (songini.song.genre !== undefined)
-								chartentry.genre = songini.song.genre;
-							if (songini.song.year !== undefined)
-								chartentry.year = songini.song.year;
-							if (songini.song.charter !== undefined)
-								chartentry.charter = songini.song.charter;
-							if (songini.song.song_length !== undefined)
-								chartentry.duration = parseInt(songini.song.song_length)/1000;
-						} catch (e) {
-							console.log("moron");
-							console.log(dir);
-							console.log(e);
+						var doesthisevenexist = false;
+						var CaSEs = ["song","Song","SONG"];
+						//                           ^
+						//     use if you have down syndrome
+						//wait but then this can be the case for the keys below
+						var songsect;
+						for(var i=0;i<CaSEs.length;i++)
+						{
+							songsect = CaSEs[i]
+							if (songini.hasOwnProperty(songsect))
+							{
+								doesthisevenexist = true
+								break
+							}
 						}
+						//console.log(songini[songsect])
+						//chartentry.ini = songini
+						if (doesthisevenexist)
+							try {
+								// ?!?!?!?!?!
+								if (songini[songsect].name !== undefined)
+									chartentry.title = songini[songsect].name;
+								if (songini[songsect].artist !== undefined)
+									chartentry.artist = songini[songsect].artist;
+								if (songini[songsect].album !== undefined)
+									chartentry.album = songini[songsect].album;
+								if (songini[songsect].genre !== undefined)
+									chartentry.genre = songini[songsect].genre;
+								if (songini[songsect].year !== undefined)
+									chartentry.year = songini[songsect].year;
+								if (songini[songsect].charter !== undefined)
+									chartentry.charter = songini[songsect].charter;
+								if (songini[songsect].song_length !== undefined)
+									chartentry.duration = parseInt(songini[songsect].song_length)/1000;
+							} catch (e) {
+								console.log("moron");
+								console.log(dir);
+								console.log(e);
+							}
 					}
 					if (chartentry.title === null || chartentry.title === undefined)
 						chartentry.title = "Untitled";
@@ -169,10 +189,11 @@ function readChartDir(dir) {
 							}
 						}
 					}
+					// and what for...
 					list.push(chartentry)
 				}
 			}
-			if (f !== ".git")
+			if (f !== ".git") // stupid me hosting charts on github
 			if (fs.lstatSync(path.join(dir,f)).isDirectory())
 			{
 				list.push.apply(list, readChartDir(path.join(dir,f))); // >:D
@@ -185,7 +206,7 @@ app.router.get('/config', function(request, response, next){
 	config = readconf();
 	config.paths = config.paths.split('|')
 	config.gamedir = _gamedir
-	console.log(_gamedir)
+	//console.log(_gamedir)
 	response.send(JSON.stringify(config))
 })
 
@@ -219,6 +240,8 @@ window.on('create', function(){
 	window.frame.show().center();
 });
 
+var isFullscr = false;
+
 window.on('ready', function(){
 	window.process = process;
 	window.module = module;
@@ -227,13 +250,20 @@ window.on('ready', function(){
 		window.alert("Game directory could not be found");
 		process.exit();
 	}
-
+	window.frame.opacity = 0.9;
 	window.addEventListener('keydown', function(e){
 		if (e.keyIdentifier === 'F12') {
 			window.frame.openDevTools();
 		}
 		if (e.keyIdentifier === 'F11') {
-			window.frame.fullscreen();
+			isFullscr = !isFullscr;
+			if (isFullscr)
+				window.frame.fullscreen();
+			else
+			{
+				window.frame.restore()
+				window.frame.resizable = true;
+			}
 		}
 	});
 });
