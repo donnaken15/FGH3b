@@ -65,10 +65,16 @@ table, th, td, tr {
 	max-width:100%;
 	display:block;
 }
+.chart-row td:nth-child(3) {
+	position:relative;
+}
 .fill { width: 100%; }
 .sideicon {
-	float:right;
-	height:40%;
+	/*float:right;
+	height:56%;*/
+	position:absolute;
+	right:4px;
+	height:80%;
 }
 .cachetext {
 	width:12%;

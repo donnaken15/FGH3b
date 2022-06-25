@@ -3,12 +3,16 @@ var fs	= require('fs');
 var ini	= require('ini');
 var path = require('path');
 var regedit = require('regedit');
+var exec = require('child_process').exec;
 
 app.serveFilesFrom(__dirname + '/root');
 
 function readconf() {
 	return ini.parse(fs.readFileSync(__dirname + '/../config.ini','utf-8'))
 }
+
+// FUN TODO: repo of charts that link to zips to easily play new charts and whatever
+// chorus is ChORuS, so that wont work out
 
 config = readconf();
 config.paths = config.paths.split('|')
@@ -53,8 +57,8 @@ function readChartDir(dir) {
 			{
 				if (fs.lstatSync(path.join(dir,f)).isFile())
 				{
-					file = path.join(dir,f)
-					chart = fs.readFileSync(file,'utf-8')
+					var file = path.join(dir,f)
+					var chart = fs.readFileSync(file,'utf-8')
 					var chartentry;
 					if (f.substr(-6) === ".chart")
 						chartentry = {
@@ -69,7 +73,9 @@ function readChartDir(dir) {
 							charter: findKeyValue(chart,"Charter"),
 							streams: [findKeyValue(chart,"MusicStream"),
 									findKeyValue(chart,"GuitarStream"),
-									findKeyValue(chart,"BassStream")]
+									findKeyValue(chart,"BassStream")],
+							cache: null,
+							pak: false
 						};
 					else
 						chartentry = {
@@ -84,7 +90,9 @@ function readChartDir(dir) {
 							charter: "Unknown",
 							streams: [null,
 									null,
-									null]
+									null],
+							cache: null,
+							pak: false
 						};
 					
 					//chartentry.inif = path.join(dir,'song.ini')

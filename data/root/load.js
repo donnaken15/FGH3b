@@ -162,6 +162,7 @@ setTimeout(function() {
 			var prop = "title";
 			if(!FASTsearchActive)
 				index++
+			index %= setlist.length;
 			for(var i=0;i<setlist.length;i++) {
 				//console.log(setlist[index])
 				if (setlist[index].hasOwnProperty(prop))
@@ -192,6 +193,8 @@ setTimeout(function() {
 		console.log("WHAT ARE YOU PRESSING?!?!")
 		console.log(e)
 	}
+	
+	cacheDetect = true
 	
 	charttable = document.getElementById("chart-cycler").children[0]
 	cyclehead = charttable.children[0].cloneNode(true)
@@ -226,6 +229,8 @@ setTimeout(function() {
 			chartentry.children[2].children[0].innerText = setlist[index].artist
 			if (chartselect === index)
 				chartentry.classList.add("chart-select")
+			if (setlist[index].cache !== null)
+				chartentry.classList.add("cached")
 			chartentry.onclick = function(e) {
 				if(dblclickcheck && chartselect == parseInt(this.id))
 				{
@@ -354,8 +359,53 @@ setTimeout(function() {
 											document.getElementById("load").outerHTML = ""
 											setTimeout(function() {
 												exec = require('child_process').exec
+												var fs	= require('fs')
+												var ini	= require('ini')
+												if (!fs.existsSync(config.gamedir + '/DATA/CACHE/.db.ini'))
+													cacheDetect = false
+												if (cacheDetect)
+												{
+													var timeToFlt = function(val) {
+														var dgt = val.split(":")
+														return (+dgt[0] * 60) + (+dgt[1]) // from string to int to string :|
+													}
+													var path = require('path')
+													wzk64cmd = "\""+path.join(path.dirname(process.execPath),"WZK64.exe")+"\""
+													var cachedini = ini.parse(fs.readFileSync(config.gamedir + '/DATA/CACHE/.db.ini','utf-8'))
+													setlist.forEach(function(e,i){
+														setTimeout(function() {
+															exec(wzk64cmd+" \""+e.file+"\"")
+																.stdout.on("data",function(data) {
+																	var id = data.substr(0,16)
+																	var centry = cachedini[id]
+																	if (centry)
+																	{
+																		e.cache = id
+																		if (e.title === "Untitled") // fallback to ini cache for whatever reason
+																		{
+																			e.title = centry.Title
+																			//console.log(e.title)
+																		}
+																		if (e.artist === "Unknown")
+																		{
+																			e.artist = centry.Author
+																			//console.log(e.artist)
+																		}
+																		if (e.duration === null)
+																		{
+																			e.duration = timeToFlt(centry.Length)
+																			//console.log(e.duration)
+																		}
+																		//console.log(centry)
+																		chartcycle() // just to show cached icon
+																	}
+																}) // weird
+															// lazy to do it in js but i feel like it would also mess up and output differently anyway
+														}, 25*i); // don't halt the program during this just to not disrupt user
+													})
+												}
 											}, 1000);
-										}, 20);
+										}, 40);
 										loaded = true
 									}
 								});
